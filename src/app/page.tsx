@@ -4,12 +4,12 @@ import { useEffect, useRef, useState } from "react";
 
 // Configuration: Add your video/audio pairs here
 const VIDEO_MODES = [
-	{ video: "/videos/base.mp4", name: "Mode 1" },
-	{ video: "/videos/noir.mp4", name: "Mode 2" },
-	{ video: "/videos/depths.mp4", name: "Mode 3" },
-	{ video: "/videos/crimson.mp4", name: "Mode 4" },
-	{ video: "/videos/fade.mp4", name: "Mode 5" },
-	{ video: "/videos/altered.mp4", name: "Mode 6" },
+	{ video: "/videos/base.mp4", name: "clean" },
+	{ video: "/videos/noir.mp4", name: "noir" },
+	{ video: "/videos/depths.mp4", name: "depths" },
+	{ video: "/videos/crimson.mp4", name: "crimson" },
+	{ video: "/videos/fade.mp4", name: "fade" },
+	{ video: "/videos/altered.mp4", name: "altered" },
 	// Add more modes as needed
 ];
 
@@ -124,11 +124,6 @@ export default function Home() {
 					🔇 Click to unmute
 				</button>
 			)}
-
-			{/* Optional: Mode indicator (remove if you want pure visual) */}
-			<div className="absolute bottom-4 left-4 bg-black/30 text-white/70 px-3 py-1 rounded text-sm backdrop-blur-sm">
-				{VIDEO_MODES[currentModeIndex].name}
-			</div>
 		</div>
 	);
 }
