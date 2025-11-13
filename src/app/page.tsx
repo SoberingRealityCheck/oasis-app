@@ -22,19 +22,6 @@ export default function Home() {
 	const [isMuted, setIsMuted] = useState(true);
 	const [showUnmuteHint, setShowUnmuteHint] = useState(true);
 	const switchTimeoutRef = useRef<NodeJS.Timeout | null>(null);
-	const [nextModeIndex, setNextModeIndex] = useState<number | null>(null);
-
-	// Preload all videos aggressively on mount
-	useEffect(() => {
-		videoRefs.current.forEach((video, index) => {
-			if (video && index !== currentModeIndex) {
-				// Load metadata and buffer for non-current videos
-				video.load();
-				// Try to force buffering by seeking to a small timestamp
-				video.currentTime = 0.1;
-			}
-		});
-	}, []);
 
 	// Initialize autoplay and mode switching
 	useEffect(() => {
@@ -52,30 +39,6 @@ export default function Home() {
 				(MIN_SWITCH_INTERVAL +
 					Math.random() * (MAX_SWITCH_INTERVAL - MIN_SWITCH_INTERVAL)) *
 				1000;
-
-			// Pre-select and warm up next video halfway through the interval
-			const warmupDelay = delay / 2;
-			
-			setTimeout(() => {
-				// Pick next mode early
-				let newIndex;
-				do {
-					newIndex = Math.floor(Math.random() * VIDEO_MODES.length);
-				} while (newIndex === currentModeIndex && VIDEO_MODES.length > 1);
-				
-				setNextModeIndex(newIndex);
-				
-				// Warm up the next video
-				const nextVideo = videoRefs.current[newIndex];
-				if (nextVideo) {
-					nextVideo.load();
-					// Seek to current timestamp to buffer that section
-					const currentVideo = videoRefs.current[currentModeIndex];
-					if (currentVideo) {
-						nextVideo.currentTime = currentVideo.currentTime;
-					}
-				}
-			}, warmupDelay);
 
 			switchTimeoutRef.current = setTimeout(() => {
 				switchToRandomMode();
@@ -98,18 +61,16 @@ export default function Home() {
 
 		const currentTime = currentVideo.currentTime;
 		
-		// Use pre-selected next mode if available, otherwise pick random
-		let newIndex = nextModeIndex;
-		if (newIndex === null || newIndex === currentModeIndex) {
-			do {
-				newIndex = Math.floor(Math.random() * VIDEO_MODES.length);
-			} while (newIndex === currentModeIndex && VIDEO_MODES.length > 1);
-		}
+		// Pick a random different mode
+		let newIndex;
+		do {
+			newIndex = Math.floor(Math.random() * VIDEO_MODES.length);
+		} while (newIndex === currentModeIndex && VIDEO_MODES.length > 1);
 
 		const newVideo = videoRefs.current[newIndex];
 		if (!newVideo) return;
 
-		// Sync timestamp (should already be close if warmed up)
+		// Sync timestamp and START new video BEFORE switching visibility
 		newVideo.currentTime = currentTime;
 		newVideo.muted = currentVideo.muted;
 		
@@ -118,6 +79,9 @@ export default function Home() {
 		
 		// Start new video playing first
 		newVideo.play().then(() => {
+			// Trigger visual crossfade
+			setCurrentModeIndex(newIndex);
+			
 			// Crossfade audio over 1 second
 			const fadeDuration = 1000;
 			const fadeSteps = 50;
@@ -140,10 +104,6 @@ export default function Home() {
 					currentVideo.pause();
 				}
 			}, fadeInterval);
-
-			// Trigger visual crossfade
-			setCurrentModeIndex(newIndex);
-			setNextModeIndex(null);
 		});
 	};
 
