@@ -7,13 +7,13 @@ export default function Home() {
 				<Image className="dark:invert" src="/next.svg" alt="Next.js logo" width={180} height={38} priority />
 				<ol className="font-mono list-inside list-decimal text-sm/6 text-center sm:text-left">
 					<li className="mb-2 tracking-[-.01em]">
-						Get started by editing{" "}
+						Uh... {" "}
 						<code className="bg-black/[.05] dark:bg-white/[.06] font-mono font-semibold px-1 py-0.5 rounded">
-							src/app/page.tsx
+							horses
 						</code>
 						.
 					</li>
-					<li className="tracking-[-.01em]">Save and see your changes instantly.</li>
+					<li className="tracking-[-.01em]">Erm What The Sigma</li>
 				</ol>
 
 				<div className="flex gap-4 items-center flex-col sm:flex-row">
@@ -23,7 +23,7 @@ export default function Home() {
 						target="_blank"
 						rel="noopener noreferrer"
 					>
-						Read our docs
+						Hell Yeah Oasis Subdomain Online
 					</a>
 				</div>
 			</main>
